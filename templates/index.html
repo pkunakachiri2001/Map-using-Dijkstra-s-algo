@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Dijkstra's Path Visualizer</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
+    <style>
+        #map { height: 600px; } 
+    </style>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#019863", "background-light": "#f5f8f7", "background-dark": "#0f231c",
+                        "surface-light": "#ffffff", "surface-dark": "#1a2632", "text-light": "#0d141c",
+                        "text-dark": "#e0e6eb", "text-muted-light": "#4939c", "text-muted-dark": "#94a3b8",
+                        "border-light": "#e2e8f0", "border-dark": "#334155"
+                    },
+                    fontFamily: { display: "Space Grotesk" },
+                    borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" }
+                }
+            }
+        };
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24 }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+    <div class="relative flex h-auto min-h-screen w-full flex-col">
+        <header class="flex w-full items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex items-center gap-3 text-text-light dark:text-text-dark">
+                <div class="size-6 text-primary">
+                    <svg fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.56,3.34a1,1,0,0,0-1-.08l-17,8a1,1,0,0,0,0,1.82l6.4,3.2,3.2,6.4a1,1,0,0,0,1.82,0l8-17A1,1,0,0,0,20.56,3.34ZM13,18.06,10.61,13.2a1,1,0,0,0-.65-.65L5,10.15l14.24-6.68Z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-xl font-bold">Dijkstra's Path Visualizer</h1>
+            </div>
+            <button class="flex items-center justify-center rounded-full p-2 hover:bg-black/10 dark:hover:bg-white/10">
+                <span class="material-symbols-outlined">dark_mode</span>
+            </button>
+        </header>
+        <main class="flex-1">
+            <div class="grid h-full lg:grid-cols-12">
+                <aside class="lg:col-span-4 xl:col-span-3 h-full border-r border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-6 lg:p-8">
+                    <div class="flex flex-col gap-8">
+                        <div class="flex flex-col gap-1">
+                            <h2 class="text-3xl font-bold tracking-tight text-text-light dark:text-text-dark">Controls</h2>
+                            <p class="text-base text-text-muted-light dark:text-text-muted-dark">Find the shortest route between two cities.</p>
+                        </div>
+                        <div class="flex flex-col gap-6">
+                            <label class="flex flex-col gap-2">
+                                <p class="text-base font-medium">Start City</p>
+                                <select id="start-city-select">
+                                </select>
+                            </label>
+                            <label class="flex flex-col gap-2">
+                                <p class="text-base font-medium">End City</p>
+                                <select id="end-city-select">
+                                </select>
+                            </label>
+                            <button id="find-path-btn" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold tracking-wide hover:bg-primary/90 transition-colors disabled:bg-primary/50 disabled:cursor-not-allowed">
+                                <span>Find Shortest Path</span>
+                            </button>
+                        </div>
+                        <hr class="border-border-light dark:border-border-dark" />
+                        <div class="flex flex-col gap-6">
+                            <h3 class="text-2xl font-bold tracking-tight">Results</h3>
+                            <div class="rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark p-4">
+                                <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Total Distance</p>
+                                <p id="result-distance" class="text-3xl font-bold text-primary">-- km</p>
+                            </div>
+                            <div class="flex flex-col gap-3">
+                                <p class="text-base font-medium">Shortest Path</p>
+                                <ul id="result-path-list" class="flex flex-col gap-2">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+                
+                <section class="lg:col-span-8 xl:col-span-9 h-full p-4 md:p-8">
+                    <div id="map" class="w-full h-full rounded-lg shadow-md"></div>
+                </section>
+                
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
