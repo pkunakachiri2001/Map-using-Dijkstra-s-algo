@@ -492,7 +492,14 @@ def dijkstra_py(start_node, end_node):
 # 4. Define Flask Routes (Our API)
 @app.route('/')
 def home():
-    return render_template('index.html')
+    response = render_template('index.html')
+    from flask import make_response
+    resp = make_response(response)
+    # Force no caching for development
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp
 
 
 @app.route('/calculate_path', methods=['POST'])
@@ -519,4 +526,6 @@ def get_cities():
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    # Disable template caching in debug mode
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    app.run(host='0.0.0.0', port=port, debug=True)

@@ -158,11 +158,68 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+    // --- DEFINE FIND ROUTE FUNCTION ---
+    window.findRoute = function(start, end) {
+        console.log(`Finding route from: ${start} to: ${end}`); // Diagnostic log
+        fetch('/calculate_path', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            // Backend expects keys 'start' and 'end'
+            body: JSON.stringify({ start: start, end: end })
+        })
+        .then(response => {
+            console.log('Received response from server:', response); // Diagnostic log
+            return response.json();
+        })
+        .then(data => {
+            console.log('Parsed data:', data); // Diagnostic log
+            if (data.distance && data.path) {
+                // --- UPDATE UI WITH NEW DATA ---
+                // No longer using a single 'result' div. Update individual elements instead.
+                
+                // Update the main distance display
+                const distanceEl = document.getElementById('result-distance');
+                if(distanceEl) {
+                    distanceEl.innerHTML = `${data.distance} <span class="text-2xl">km</span>`;
+                }
+
+                // Display the detailed path steps
+                displayPath(data.path);
+
+                // Calculate and display all other stats (time, cost, etc.)
+                updateStats(data.distance, data.path);
+                
+                // Enable save and share buttons
+                const saveBtn = document.getElementById('save-route-btn');
+                const shareBtn = document.getElementById('share-route-btn');
+                if (saveBtn) saveBtn.disabled = false;
+                if (shareBtn) shareBtn.disabled = false;
+
+            } else if (data.error) {
+                displayError(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('result').innerHTML = `
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-3xl text-red-500">error</span>
+                    <p class="text-red-500 font-bold">An error occurred. Please try again.</p>
+                </div>
+            `;
+        });
+    };
+
     // --- 5. ADD CLICK EVENT TO BUTTON ---
     findPathBtn.addEventListener('click', () => {
-        const startCity = startSelect.value;
-        const endCity = endSelect.value;
+        // Use the TomSelect instances bound to #start-city-select and #end-city-select
+        const startCity = tomSelectStart ? tomSelectStart.getValue() : null;
+        const endCity = tomSelectEnd ? tomSelectEnd.getValue() : null;
         
+        console.log('Find Path button clicked.'); // Diagnostic log
+        console.log('Start City selected:', startCity); // Diagnostic log
+        console.log('End City selected:', endCity); // Diagnostic log
+
         clearResults(); 
 
         if (startCity) {
@@ -191,21 +248,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // --- 6. CALL THE PYTHON BACKEND ---
-        fetch('/calculate_path', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ start: startCity, end: endCity })
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.distance === "Infinity" || result.distance === Infinity) {
-                displayError(`No path found from ${startCity} to ${endCity}.`);
-            } else {
-                distanceEl.textContent = `${result.distance} km`;
-                displayPath(result.path);
-            }
-        });
+        // --- 6. CALL THE ENHANCED FIND ROUTE FUNCTION ---
+        findRoute(startCity, endCity);
     });
 
     // --- THEME TOGGLE ---
@@ -380,46 +424,527 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Animated gradient polyline
+        // Animate the path drawing
         currentPathLayer = L.polyline(latLngs, {
             color: '#6366f1',
             weight: 5,
             opacity: 0.9,
-            smoothFactor: 2,
+            smoothFactor: 1,
             lineCap: 'round',
             lineJoin: 'round'
         }).addTo(map);
         
-        // Add decorative arrow heads along the path
-        const decorator = L.polylineDecorator(currentPathLayer, {
-            patterns: [
-                {
-                    offset: 25,
-                    repeat: 100,
-                    symbol: L.Symbol.arrowHead({
-                        pixelSize: 12,
-                        polygon: false,
-                        pathOptions: {
-                            stroke: true,
-                            weight: 3,
-                            color: '#8b5cf6',
-                            opacity: 0.8
-                        }
-                    })
-                }
-            ]
-        });
-        
         map.fitBounds(currentPathLayer.getBounds().pad(0.15));
-        
-        // Animate the path drawing
-        let pathLength = latLngs.length;
-        let drawn = 0;
-        const animateInterval = setInterval(() => {
-            drawn++;
-            if (drawn >= pathLength) {
-                clearInterval(animateInterval);
-            }
-        }, 100);
     }
+
+    // --- TRANSPORT MODE FUNCTIONALITY ---
+    const transportModes = document.querySelectorAll('.transport-mode-btn');
+    let selectedMode = 'car'; // default
+    transportModes.forEach(btn => {
+        btn.addEventListener('click', () => {
+            transportModes.forEach(b => {
+                b.classList.remove('active', 'bg-primary/10', 'text-primary', 'border-primary/30');
+                b.classList.add('bg-surface-light', 'text-text-muted-light', 'border-border-light');
+            });
+            btn.classList.remove('bg-surface-light', 'text-text-muted-light', 'border-border-light');
+            btn.classList.add('active', 'bg-primary/10', 'text-primary', 'border-primary/30');
+            selectedMode = btn.dataset.mode;
+            // Recalculate if route exists
+            if (currentPathLayer) {
+                const startCity = tomSelectStart ? tomSelectStart.getValue() : null;
+                const endCity = tomSelectEnd ? tomSelectEnd.getValue() : null;
+                if (startCity && endCity) {
+                    findRoute(startCity, endCity);
+                }
+            }
+        });
+    });
+
+    // --- SWAP CITIES BUTTON ---
+    document.getElementById('swap-cities-btn').addEventListener('click', () => {
+        const startVal = tomSelectStart ? tomSelectStart.getValue() : null;
+        const endVal = tomSelectEnd ? tomSelectEnd.getValue() : null;
+        if (tomSelectStart) tomSelectStart.setValue(endVal);
+        if (tomSelectEnd) tomSelectEnd.setValue(startVal);
+    });
+
+    // --- CLEAR ROUTE BUTTON ---
+    document.getElementById('clear-route-btn').addEventListener('click', () => {
+        if (tomSelectStart) tomSelectStart.clear();
+        if (tomSelectEnd) tomSelectEnd.clear();
+        
+        // Reset all stats and UI elements
+        clearResults();
+        resetStats();
+
+        // Disable buttons that require a route
+        const saveBtn = document.getElementById('save-route-btn');
+        const shareBtn = document.getElementById('share-route-btn');
+        const downloadBtn = document.getElementById('download-route-btn');
+        const speakBtn = document.getElementById('speak-route-btn');
+        if(saveBtn) saveBtn.disabled = true;
+        if(shareBtn) shareBtn.disabled = true;
+        if(downloadBtn) downloadBtn.disabled = true;
+        if(speakBtn) speakBtn.disabled = true;
+
+        // Hide map overlay
+        const mapOverlay = document.getElementById('map-info-overlay');
+        if(mapOverlay) mapOverlay.classList.add('hidden');
+        
+        // Stop any ongoing speech
+        if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+        }
+    });
+
+    // --- SAVE ROUTE FUNCTIONALITY ---
+    document.getElementById('save-route-btn').addEventListener('click', () => {
+        const startCity = tomSelectStart ? tomSelectStart.getValue() : null;
+        const endCity = tomSelectEnd ? tomSelectEnd.getValue() : null;
+        const distanceText = distanceEl.textContent;
+        
+        if (!startCity || !endCity || !distanceText.includes('km')) {
+            alert('Please calculate a route first!');
+            return;
+        }
+        
+        const route = {
+            id: Date.now(),
+            start: startCity,
+            end: endCity,
+            distance: parseFloat(distanceText),
+            mode: selectedMode,
+            timestamp: new Date().toISOString()
+        };
+        
+        let savedRoutes = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
+        savedRoutes.unshift(route);
+        if (savedRoutes.length > 10) savedRoutes = savedRoutes.slice(0, 10); // Keep max 10
+        localStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
+        
+        displaySavedRoutes();
+        alert('Route saved successfully!');
+    });
+
+    // --- DISPLAY SAVED ROUTES ---
+    function displaySavedRoutes() {
+        const savedRoutes = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
+        const container = document.getElementById('saved-routes-list');
+        
+        if (savedRoutes.length === 0) {
+            container.innerHTML = '<p class="text-text-muted-light dark:text-text-muted-dark text-center py-8">No saved routes yet</p>';
+            return;
+        }
+        
+        container.innerHTML = savedRoutes.map(route => `
+            <div class="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-purple-500/5 border border-primary/10 hover:border-primary/30 transition-all group mb-2">
+                <div class="flex items-start justify-between mb-2">
+                    <div>
+                        <p class="font-bold text-text-light dark:text-text-dark">${route.start} → ${route.end}</p>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">${new Date(route.timestamp).toLocaleDateString()}</p>
+                    </div>
+                    <span class="text-xs font-bold px-2 py-1 bg-accent/20 text-accent rounded-lg">${route.distance} km</span>
+                </div>
+                <div class="flex items-center gap-2 mt-3">
+                    <button onclick="loadSavedRoute('${route.start}', '${route.end}', '${route.mode}')" class="flex-1 px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all text-xs font-bold flex items-center justify-center gap-1">
+                        <span class="material-symbols-outlined text-sm">play_arrow</span> Load
+                    </button>
+                    <button onclick="deleteSavedRoute(${route.id})" class="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-all text-xs font-bold flex items-center justify-center gap-1">
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // --- LOAD SAVED ROUTE ---
+    window.loadSavedRoute = function(start, end, mode) {
+        if (tomSelectStart) tomSelectStart.setValue(start);
+        if (tomSelectEnd) tomSelectEnd.setValue(end);
+        
+        document.querySelectorAll('.transport-mode-btn').forEach(btn => {
+            const isActive = btn.dataset.mode === mode;
+            btn.classList.toggle('active', isActive);
+            btn.classList.toggle('bg-primary/10', isActive);
+            btn.classList.toggle('text-primary', isActive);
+            btn.classList.toggle('border-primary/30', isActive);
+            
+            btn.classList.toggle('bg-surface-light', !isActive);
+            btn.classList.toggle('text-text-muted-light', !isActive);
+            btn.classList.toggle('border-border-light', !isActive);
+        });
+        selectedMode = mode;
+        findRoute(start, end);
+    };
+
+    // --- DELETE SAVED ROUTE ---
+    window.deleteSavedRoute = function(id) {
+        let savedRoutes = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
+        savedRoutes = savedRoutes.filter(r => r.id !== id);
+        localStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
+        displaySavedRoutes();
+    };
+
+    // --- CLEAR ALL SAVED ROUTES ---
+    const clearSavedBtn = document.getElementById('clear-saved-btn');
+    if(clearSavedBtn) {
+        clearSavedBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all saved routes?')) {
+                localStorage.removeItem('savedRoutes');
+                displaySavedRoutes();
+            }
+        });
+    }
+
+
+    // --- SHARE ROUTE ---
+    const shareRouteBtn = document.getElementById('share-route-btn');
+    if (shareRouteBtn) {
+        shareRouteBtn.addEventListener('click', () => {
+            const startCity = tomSelectStart ? tomSelectStart.getValue() : null;
+            const endCity = tomSelectEnd ? tomSelectEnd.getValue() : null;
+        
+        if (!startCity || !endCity) {
+            alert('Please calculate a route first!');
+            return;
+        }
+        
+        const shareUrl = `${window.location.origin}?start=${encodeURIComponent(startCity)}&end=${encodeURIComponent(endCity)}&mode=${selectedMode}`;
+        
+        if (navigator.share) {
+            navigator.share({
+                title: 'India Route Map',
+                text: `Check out this route from ${startCity} to ${endCity}!`,
+                url: shareUrl
+            });
+        } else {
+            navigator.clipboard.writeText(shareUrl);
+            alert('Route link copied to clipboard!');
+        }
+        });
+    }
+
+    // --- POPULAR ROUTES ---
+    window.loadPopularRoute = function(start, end) {
+        if (tomSelectStart) tomSelectStart.setValue(start);
+        if (tomSelectEnd) tomSelectEnd.setValue(end);
+        findRoute(start, end);
+    };
+
+    // --- MAP CONTROLS ---
+    document.getElementById('recenter-map-btn').addEventListener('click', () => {
+        map.setView([22.5, 79.0], 5); 
+    });
+
+    let isFullscreen = false;
+    document.getElementById('fullscreen-map-btn').addEventListener('click', () => {
+        const mapContainer = document.querySelector('.lg\\:col-span-8'); // Target the container of the map
+        if (!document.fullscreenElement) {
+            mapContainer.requestFullscreen().catch(err => {
+                alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    });
+
+    document.getElementById('download-route-btn').addEventListener('click', () => {
+        const startCity = tomSelectStart ? tomSelectStart.getValue() : null;
+        const endCity = tomSelectEnd ? tomSelectEnd.getValue() : null;
+        const distanceText = distanceEl.textContent;
+        const pathText = Array.from(pathListEl.querySelectorAll('li .font-bold')).map(el => el.textContent).join(' -> ');
+        
+        if (!startCity || !endCity) return;
+        
+        const routeData = `Route Details\n===============\nFrom: ${startCity}\nTo: ${endCity}\nDistance: ${distanceText}\nMode: ${selectedMode}\nPath: ${pathText}\n\nGenerated: ${new Date().toLocaleString()}\n\nProduced by Panashe Kunaka`;
+        const blob = new Blob([routeData], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `route_${startCity}_${endCity}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    // --- UPDATE STATS WITH TRANSPORT MODE ---
+    function updateStats(distance, path) {
+        const speeds = {car: 80, bus: 60, bike: 50};
+        const fuelCosts = {car: 6, bus: 4, bike: 3}; // ₹ per km
+        
+        const speed = speeds[selectedMode] || speeds['car'];
+        const fuelCost = fuelCosts[selectedMode] || fuelCosts['car'];
+        const time = (distance / speed);
+        const hours = Math.floor(time);
+        const minutes = Math.round((time - hours) * 60);
+
+        const timeFormatted = `${hours}h ${minutes}m`;
+        const cost = (distance * fuelCost).toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 });
+        const miles = (distance * 0.621371).toFixed(1);
+        
+        // Count unique states (simplified - would need state mapping)
+        const states = new Set(path.map(city => city.substring(0, 2).toUpperCase()));
+        
+        document.getElementById('est-time').innerText = timeFormatted;
+        document.getElementById('fuel-cost').innerText = cost;
+        document.getElementById('states-count').innerText = states.size || '--';
+        document.getElementById('distance-miles').innerText = `${miles} mi`;
+        
+        // Enable download and speak buttons
+        document.getElementById('download-route-btn').disabled = false;
+        document.getElementById('speak-route-btn').disabled = false;
+        
+        // Show map overlay
+        const overlayName = document.getElementById('overlay-route-name');
+        overlayName.innerText = `${path[0]} → ${path[path.length - 1]}`;
+        document.getElementById('map-info-overlay').classList.remove('hidden');
+    }
+
+    // --- KEYBOARD SHORTCUTS ---
+    document.addEventListener('keydown', (e) => {
+        const helpModal = document.getElementById('help-modal');
+        
+        // Close help modal with Escape
+        if (e.key === 'Escape' && helpModal && helpModal.style.display !== 'none') {
+            helpModal.style.display = 'none';
+            return;
+        }
+        
+        // Prevent shortcuts while typing in inputs
+        if (document.activeElement.tagName === 'INPUT' || document.activeElement.classList.contains('ts-control')) {
+            return;
+        }
+
+        if (e.ctrlKey && e.key === 'k') {
+            e.preventDefault();
+            if (tomSelectStart) {
+                tomSelectStart.focus();
+            }
+        }
+        if (e.key === 'Escape') {
+            const clearBtn = document.getElementById('clear-route-btn');
+            if (clearBtn) clearBtn.click();
+        }
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            const saveBtn = document.getElementById('save-route-btn');
+            if (saveBtn && !saveBtn.disabled) saveBtn.click();
+        }
+    });
+
+    // --- LOAD ROUTE FROM URL PARAMETERS ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const startParam = urlParams.get('start');
+    const endParam = urlParams.get('end');
+    const modeParam = urlParams.get('mode');
+    
+    if (startParam && endParam) {
+        setTimeout(() => {
+            if (tomSelectStart) tomSelectStart.setValue(startParam);
+            if (tomSelectEnd) tomSelectEnd.setValue(endParam);
+
+            if (modeParam) {
+                document.querySelectorAll('.transport-mode-btn').forEach(btn => {
+                    const isActive = btn.dataset.mode === modeParam;
+                    btn.classList.toggle('active', isActive);
+                    btn.classList.toggle('bg-primary/10', isActive);
+                    btn.classList.toggle('text-primary', isActive);
+                    btn.classList.toggle('border-primary/30', isActive);
+                    
+                    btn.classList.toggle('bg-surface-light', !isActive);
+                    btn.classList.toggle('text-text-muted-light', !isActive);
+                    btn.classList.toggle('border-border-light', !isActive);
+                });
+                selectedMode = modeParam;
+            }
+            findRoute(startParam, endParam);
+        }, 500); // Delay to ensure TomSelect is ready
+    }
+
+    // --- TEXT-TO-SPEECH ROUTE NARRATION ---
+    let currentSpeechPath = [];
+    const speakRouteBtn = document.getElementById('speak-route-btn');
+    const speakStatus = document.getElementById('speak-status');
+    
+    if (speakRouteBtn) {
+        speakRouteBtn.addEventListener('click', () => {
+            // Check if speech synthesis is supported
+            if (!('speechSynthesis' in window)) {
+                alert('Sorry, your browser does not support text-to-speech!');
+                return;
+            }
+            
+            // If already speaking, stop it
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                speakStatus.classList.add('hidden');
+                speakRouteBtn.innerHTML = '<span class="material-symbols-outlined text-sm sm:text-base">volume_up</span><span>Speak Route</span><span id="speak-status" class="hidden text-[10px] px-2 py-0.5 bg-purple-500/20 rounded-full">Speaking...</span>';
+                return;
+            }
+            
+            // Get current route path
+            const pathList = document.getElementById('result-path-list');
+            const pathItems = pathList.querySelectorAll('li.flex');
+            
+            if (pathItems.length === 0) {
+                alert('Please calculate a route first!');
+                return;
+            }
+            
+            // Extract city names from the path
+            const cities = [];
+            pathItems.forEach(item => {
+                const cityNameElement = item.querySelector('.font-bold');
+                if (cityNameElement) {
+                    cities.push(cityNameElement.textContent.trim());
+                }
+            });
+            
+            if (cities.length === 0) return;
+            
+            // Get route statistics
+            const distance = document.getElementById('result-distance').textContent.trim();
+            const estTime = document.getElementById('est-time').textContent.trim();
+            const fuelCost = document.getElementById('fuel-cost').textContent.trim();
+            
+            // Build the speech text
+            let speechText = `Your route from ${cities[0]} to ${cities[cities.length - 1]} has been calculated. `;
+            speechText += `Total distance is ${distance}. `;
+            speechText += `Estimated travel time is ${estTime}. `;
+            speechText += `Estimated fuel cost is ${fuelCost}. `;
+            speechText += `\n\nYour route has ${cities.length} stops. `;
+            speechText += `Starting from ${cities[0]}. `;
+            
+            // Add intermediate cities
+            if (cities.length > 2) {
+                speechText += 'Then passing through: ';
+                for (let i = 1; i < cities.length - 1; i++) {
+                    speechText += `${cities[i]}, `;
+                }
+            }
+            
+            speechText += `And finally arriving at ${cities[cities.length - 1]}. `;
+            speechText += 'Have a safe journey!';
+            
+            // Create speech synthesis utterance
+            const utterance = new SpeechSynthesisUtterance(speechText);
+            utterance.rate = 0.9; // Slightly slower for clarity
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            utterance.lang = 'en-IN'; // Indian English
+            
+            // Show speaking status
+            speakStatus.classList.remove('hidden');
+            speakRouteBtn.innerHTML = '<span class="material-symbols-outlined text-sm sm:text-base">volume_off</span><span>Stop Speaking</span><span id="speak-status" class="text-[10px] px-2 py-0.5 bg-purple-500/20 rounded-full">Speaking...</span>';
+            
+            // Handle speech end
+            utterance.onend = () => {
+                speakStatus.classList.add('hidden');
+                speakRouteBtn.innerHTML = '<span class="material-symbols-outlined text-sm sm:text-base">volume_up</span><span>Speak Route</span><span id="speak-status" class="hidden text-[10px] px-2 py-0.5 bg-purple-500/20 rounded-full">Speaking...</span>';
+            };
+            
+            // Handle speech error
+            utterance.onerror = (event) => {
+                console.error('Speech synthesis error:', event);
+                speakStatus.classList.add('hidden');
+                speakRouteBtn.innerHTML = '<span class="material-symbols-outlined text-sm sm:text-base">volume_up</span><span>Speak Route</span><span id="speak-status" class="hidden text-[10px] px-2 py-0.5 bg-purple-500/20 rounded-full">Speaking...</span>';
+                alert('Error speaking the route. Please try again.');
+            };
+            
+            // Speak it!
+            window.speechSynthesis.speak(utterance);
+        });
+    }
+
+    // --- HELP MODAL ---
+    const helpModal = document.getElementById('help-modal');
+    const helpBtn = document.getElementById('help-btn');
+    const closeHelpBtn = document.getElementById('close-help-btn');
+    
+    if (helpBtn && helpModal) {
+        helpBtn.addEventListener('click', () => {
+            helpModal.style.display = 'flex';
+            setTimeout(() => helpModal.classList.remove('hidden'), 10); // For transition
+        });
+    }
+    
+    if (closeHelpBtn && helpModal) {
+        closeHelpBtn.addEventListener('click', () => {
+            helpModal.classList.add('hidden');
+            setTimeout(() => helpModal.style.display = 'none', 300); // Match animation
+        });
+    }
+    
+    if (helpModal) {
+        helpModal.addEventListener('click', (e) => {
+            if (e.target === helpModal) {
+                helpModal.classList.add('hidden');
+                setTimeout(() => helpModal.style.display = 'none', 300);
+            }
+        });
+    }
+
+    // --- VOICE SEARCH ---
+    const voiceBtn = document.getElementById('voice-search-btn');
+    if (voiceBtn && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-IN';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        voiceBtn.addEventListener('click', () => {
+            voiceBtn.classList.add('animate-pulse');
+            voiceBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+            recognition.start();
+        });
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript.toLowerCase();
+            console.log('Voice input:', transcript);
+            
+            // Parse voice command: "find route from [city1] to [city2]"
+            const fromMatch = transcript.match(/from\s+([a-z\s]+?)(?:\s+to|$)/i);
+            const toMatch = transcript.match(/to\s+([a-z\s]+?)$/i);
+            
+            if (fromMatch && toMatch) {
+                const startCity = fromMatch[1].trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                const endCity = toMatch[1].trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                
+                if(tomSelectStart) tomSelectStart.setValue(startCity);
+                if(tomSelectEnd) tomSelectEnd.setValue(endCity);
+                
+                setTimeout(() => {
+                    findRoute(startCity, endCity);
+                }, 500);
+            } else {
+                alert('Please say: "Find route from [city] to [city]"');
+            }
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            voiceBtn.classList.remove('animate-pulse');
+            voiceBtn.style.background = '';
+        };
+
+        recognition.onend = () => {
+            voiceBtn.classList.remove('animate-pulse');
+            voiceBtn.style.background = '';
+        };
+    } else if (voiceBtn) {
+        voiceBtn.disabled = true;
+        voiceBtn.title = 'Voice search not supported';
+    }
+
+    // --- Add a function to reset stats ---
+    function resetStats() {
+        document.getElementById('result-distance').innerHTML = '-- km';
+        document.getElementById('est-time').innerText = '--';
+        document.getElementById('fuel-cost').innerText = '--';
+        document.getElementById('states-count').innerText = '--';
+        document.getElementById('distance-miles').innerText = '--';
+    }
+
+    // --- INITIALIZE ---
+    displaySavedRoutes();
 });

@@ -3,7 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Dijkstra's Path Visualizer</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>India Path Finder - Dijkstra Route Planner</title>
+    
+    <!-- Favicon - Using emoji as SVG -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗺️</text></svg>" type="image/svg+xml">
     
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
     
@@ -304,44 +310,44 @@
 
 <body class="bg-background-light dark:bg-background-dark font-sans text-text-light dark:text-text-dark">
     <div class="relative flex h-auto min-h-screen w-full flex-col">
-        <header class="glass-effect sticky top-0 z-50 flex w-full items-center justify-between whitespace-nowrap px-6 sm:px-8 lg:px-10 py-5 animate-fade-in">
-            <div class="flex items-center gap-5 text-text-light dark:text-text-dark">
+        <header class="glass-effect sticky top-0 z-50 flex w-full items-center justify-between whitespace-nowrap px-4 sm:px-6 lg:px-10 py-4 sm:py-5 animate-fade-in">
+            <div class="flex items-center gap-2 sm:gap-5 text-text-light dark:text-text-dark">
                 <div class="relative icon-float">
                     <div class="absolute inset-0 bg-gradient-to-br from-primary via-purple-500 to-pink-500 rounded-2xl blur-xl opacity-60 animate-pulse"></div>
-                    <div class="relative w-14 h-14 bg-gradient-to-br from-primary via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-glow transform hover:scale-110 transition-transform duration-300">
-                        <svg class="w-7 h-7 text-white" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <div class="relative w-10 h-10 sm:w-14 sm:h-14 bg-gradient-to-br from-primary via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-glow transform hover:scale-110 transition-transform duration-300">
+                        <svg class="w-5 h-5 sm:w-7 sm:h-7 text-white" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
                         </svg>
                     </div>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-extrabold gradient-text tracking-tight">India Path Finder</h1>
-                    <p class="text-xs font-semibold text-primary/70 dark:text-primary-light/70 tracking-wide uppercase">Powered by Dijkstra's Algorithm • 180+ Cities</p>
+                    <h1 class="text-lg sm:text-2xl font-extrabold gradient-text tracking-tight">India Path Finder</h1>
+                    <p class="text-[10px] sm:text-xs font-semibold text-primary/70 dark:text-primary-light/70 tracking-wide uppercase hidden xs:block">Powered by Dijkstra's Algorithm • 180+ Cities</p>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <span class="creator-badge transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+            <div class="flex items-center gap-2 sm:gap-4">
+                <span class="creator-badge transform hover:scale-105 transition-transform duration-300 cursor-pointer hidden md:inline-flex">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
                     </svg>
                     <span>Produced by Panashe Kunaka</span>
                 </span>
-                <button id="theme-toggle" class="flex items-center justify-center rounded-2xl p-3 bg-gradient-to-br from-primary/10 to-purple-500/10 hover:from-primary/20 hover:to-purple-500/20 transition-all duration-300 transform hover:scale-110 neon-border">
-                    <span class="material-symbols-outlined text-primary text-xl">dark_mode</span>
+                <button id="theme-toggle" class="flex items-center justify-center rounded-xl sm:rounded-2xl p-2 sm:p-3 bg-gradient-to-br from-primary/10 to-purple-500/10 hover:from-primary/20 hover:to-purple-500/20 transition-all duration-300 transform hover:scale-110 neon-border">
+                    <span class="material-symbols-outlined text-primary text-lg sm:text-xl">dark_mode</span>
                 </button>
             </div>
         </header>
-        <main class="flex-1">
-            <div class="grid h-full lg:grid-cols-12">
-                <aside class="lg:col-span-4 xl:col-span-3 h-full border-r-2 border-primary/10 bg-gradient-to-b from-surface-light via-purple-50/30 to-blue-50/30 dark:from-surface-dark dark:via-purple-950/20 dark:to-blue-950/20 p-8 lg:p-10 overflow-y-auto shadow-2xl">
-                    <div class="flex flex-col gap-10">
-                        <div class="flex flex-col gap-3 animate-slide-in relative">
-                            <div class="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-primary via-purple-500 to-pink-500 rounded-full"></div>
-                            <h2 class="text-4xl font-black tracking-tight gradient-text leading-tight">Route Planner</h2>
-                            <p class="text-sm text-text-muted-light dark:text-text-muted-dark leading-relaxed">Discover the optimal path between <span class="font-bold text-primary">180+ Indian cities</span> using advanced graph algorithms.</p>
-                            <div class="flex gap-2 mt-2">
-                                <span class="px-3 py-1 bg-primary/10 dark:bg-primary/20 text-primary text-xs font-bold rounded-full">AI-Powered</span>
-                                <span class="px-3 py-1 bg-accent/10 dark:bg-accent/20 text-accent text-xs font-bold rounded-full">Real-Time</span>
+        <main class="flex-1 px-4 sm:px-6 lg:px-10 py-4 sm:py-6">
+            <div class="grid h-full lg:grid-cols-12 gap-4 sm:gap-6">
+                <aside class="lg:col-span-4 xl:col-span-3 h-full border-2 border-primary/10 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-surface-light via-purple-50/30 to-blue-50/30 dark:from-surface-dark dark:via-purple-950/20 dark:to-blue-950/20 p-4 sm:p-6 lg:p-10 overflow-y-auto shadow-2xl max-h-[calc(100vh-180px)] lg:max-h-none">
+                    <div class="flex flex-col gap-6 sm:gap-10">
+                        <div class="flex flex-col gap-2 sm:gap-3 animate-slide-in relative">
+                            <div class="absolute -left-2 sm:-left-4 top-0 w-0.5 sm:w-1 h-full bg-gradient-to-b from-primary via-purple-500 to-pink-500 rounded-full"></div>
+                            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight gradient-text leading-tight">Route Planner</h2>
+                            <p class="text-xs sm:text-sm text-text-muted-light dark:text-text-muted-dark leading-relaxed">Discover the optimal path between <span class="font-bold text-primary">180+ Indian cities</span> using advanced graph algorithms.</p>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="px-2 sm:px-3 py-1 bg-primary/10 dark:bg-primary/20 text-primary text-[10px] sm:text-xs font-bold rounded-full">AI-Powered</span>
+                                <span class="px-2 sm:px-3 py-1 bg-accent/10 dark:bg-accent/20 text-accent text-[10px] sm:text-xs font-bold rounded-full">Real-Time</span>
                             </div>
                         </div>
                         
@@ -357,10 +363,13 @@
                                 </select>
                             </label>
                             
-                            <div class="flex items-center justify-center">
-                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary/10 to-purple-500/10 flex items-center justify-center border-2 border-primary/20">
-                                    <span class="material-symbols-outlined text-primary text-2xl animate-pulse">swap_vert</span>
-                                </div>
+                            <div class="flex items-center justify-center gap-3">
+                                <button id="swap-cities-btn" class="group w-12 h-12 rounded-full bg-gradient-to-br from-primary/10 to-purple-500/10 flex items-center justify-center border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-110 cursor-pointer" title="Swap cities">
+                                    <span class="material-symbols-outlined text-primary text-2xl group-hover:rotate-180 transition-transform duration-300">swap_vert</span>
+                                </button>
+                                <button id="clear-route-btn" class="px-4 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-bold hover:bg-red-100 dark:hover:bg-red-900/30 transition-all duration-300 border border-red-200 dark:border-red-800" title="Clear route">
+                                    <span class="material-symbols-outlined text-base">close</span>
+                                </button>
                             </div>
                             
                             <label class="flex flex-col gap-3 group">
@@ -374,51 +383,135 @@
                                 </select>
                             </label>
                             
-                            <button id="find-path-btn" class="btn-primary group relative flex w-full cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-2xl h-16 px-8 bg-gradient-to-r from-primary via-purple-600 to-pink-600 text-white text-lg font-black tracking-wide hover:shadow-glow transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.03] active:scale-[0.97] shadow-2xl">
-                                <span class="material-symbols-outlined text-2xl group-hover:rotate-180 transition-transform duration-500">explore</span>
-                                <span>Find Shortest Route</span>
-                                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                            <!-- Transport Mode Selector -->
+                            <div class="flex flex-col gap-2 sm:gap-3">
+                                <p class="text-xs sm:text-sm font-bold text-text-light dark:text-text-dark tracking-wide flex items-center gap-1.5 sm:gap-2">
+                                    <span class="material-symbols-outlined text-base sm:text-lg text-primary">directions_car</span>
+                                    TRANSPORT MODE
+                                </p>
+                                <div class="grid grid-cols-3 gap-1.5 sm:gap-2">
+                                    <button class="transport-mode-btn active px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-primary/10 dark:bg-primary/20 text-primary border-2 border-primary/30 font-bold text-xs sm:text-sm hover:bg-primary/20 transition-all min-h-[56px] sm:min-h-0" data-mode="car" data-speed="80">
+                                        <span class="material-symbols-outlined text-lg sm:text-xl">directions_car</span>
+                                        <span class="block text-xs">Car</span>
+                                    </button>
+                                    <button class="transport-mode-btn px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-surface-light dark:bg-surface-dark text-text-muted-light dark:text-text-muted-dark border-2 border-border-light dark:border-border-dark font-bold text-xs sm:text-sm hover:bg-primary/10 transition-all min-h-[56px] sm:min-h-0" data-mode="bus" data-speed="60">
+                                        <span class="material-symbols-outlined text-lg sm:text-xl">directions_bus</span>
+                                        <span class="block text-xs">Bus</span>
+                                    </button>
+                                    <button class="transport-mode-btn px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-surface-light dark:bg-surface-dark text-text-muted-light dark:text-text-muted-dark border-2 border-border-light dark:border-border-dark font-bold text-xs sm:text-sm hover:bg-primary/10 transition-all min-h-[56px] sm:min-h-0" data-mode="bike" data-speed="50">
+                                        <span class="material-symbols-outlined text-lg sm:text-xl">two_wheeler</span>
+                                        <span class="block text-xs">Bike</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-2">
+                                <button id="find-path-btn" class="btn-primary group relative flex flex-1 cursor-pointer items-center justify-center gap-2 sm:gap-3 overflow-hidden rounded-xl sm:rounded-2xl h-12 sm:h-16 px-4 sm:px-8 bg-gradient-to-r from-primary via-purple-600 to-pink-600 text-white text-sm sm:text-lg font-black tracking-wide hover:shadow-glow transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.03] active:scale-[0.97] shadow-2xl">
+                                    <span class="material-symbols-outlined text-xl sm:text-2xl group-hover:rotate-180 transition-transform duration-500">explore</span>
+                                    <span class="hidden xs:inline">Find Shortest Route</span>
+                                    <span class="xs:hidden">Find Route</span>
+                                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                                </button>
+                                <button id="voice-search-btn" class="relative flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 text-white hover:shadow-glow transition-all duration-500 transform hover:scale-[1.03] active:scale-[0.97] shadow-2xl group" title="Voice Search">
+                                    <span class="material-symbols-outlined text-xl sm:text-2xl group-hover:scale-110 transition-transform">mic</span>
+                                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 rounded-xl sm:rounded-2xl"></div>
+                                </button>
+                            </div>
+                            
+                            <!-- Quick Actions -->
+                            <div class="flex gap-1.5 sm:gap-2">
+                                <button id="save-route-btn" class="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-accent/10 to-emerald-500/10 text-accent dark:text-accent font-bold text-xs sm:text-sm hover:from-accent/20 hover:to-emerald-500/20 transition-all border border-accent/20 disabled:opacity-50 min-h-[44px]" disabled>
+                                    <span class="material-symbols-outlined text-sm sm:text-base">bookmark</span>
+                                    <span class="ml-1">Save</span>
+                                </button>
+                                <button id="share-route-btn" class="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 dark:text-blue-400 font-bold text-xs sm:text-sm hover:from-blue-500/20 hover:to-cyan-500/20 transition-all border border-blue-500/20 disabled:opacity-50 min-h-[44px]" disabled>
+                                    <span class="material-symbols-outlined text-sm sm:text-base">share</span>
+                                    <span class="ml-1">Share</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Voice Assistant Button -->
+                            <button id="speak-route-btn" class="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-600 dark:text-purple-400 font-bold text-xs sm:text-sm hover:from-purple-500/20 hover:to-pink-500/20 transition-all border border-purple-500/20 disabled:opacity-50 min-h-[44px] flex items-center justify-center gap-2" disabled>
+                                <span class="material-symbols-outlined text-sm sm:text-base">volume_up</span>
+                                <span>Speak Route</span>
+                                <span id="speak-status" class="hidden text-[10px] px-2 py-0.5 bg-purple-500/20 rounded-full">Speaking...</span>
                             </button>
                         </div>
                         
                         <div class="h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-full shadow-lg"></div>
                         
-                        <div class="flex flex-col gap-7 animate-slide-in" style="animation-delay: 0.2s;">
-                            <div class="flex items-center gap-3 relative">
-                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-xl">
-                                    <span class="material-symbols-outlined text-white text-xl">analytics</span>
+                        <div class="flex flex-col gap-4 sm:gap-7 animate-slide-in" style="animation-delay: 0.2s;">
+                            <div class="flex items-center gap-2 sm:gap-3 relative">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-xl">
+                                    <span class="material-symbols-outlined text-white text-lg sm:text-xl">analytics</span>
                                 </div>
-                                <h3 class="text-2xl font-black tracking-tight gradient-text">Journey Analytics</h3>
+                                <h3 class="text-xl sm:text-2xl font-black tracking-tight gradient-text">Journey Analytics</h3>
                             </div>
                             
-                            <div class="stats-card rounded-3xl p-7 shadow-2xl relative overflow-hidden transform hover:scale-[1.02] transition-transform duration-300">
-                                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full blur-3xl"></div>
+                            <div class="stats-card rounded-2xl sm:rounded-3xl p-4 sm:p-7 shadow-2xl relative overflow-hidden transform hover:scale-[1.02] transition-transform duration-300">
+                                <div class="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full blur-3xl"></div>
                                 <div class="relative z-10">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <p class="text-xs font-black uppercase tracking-widest text-primary/70">Total Distance</p>
-                                        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-primary text-lg">straighten</span>
+                                    <div class="flex items-center justify-between mb-2 sm:mb-3">
+                                        <p class="text-[10px] sm:text-xs font-black uppercase tracking-widest text-primary/70">Total Distance</p>
+                                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-primary/10 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-primary text-base sm:text-lg">straighten</span>
                                         </div>
                                     </div>
-                                    <p id="result-distance" class="text-5xl font-black gradient-text mb-2 tracking-tight">-- km</p>
-                                    <div class="flex items-center gap-2">
+                                    <p id="result-distance" class="text-3xl sm:text-5xl font-black gradient-text mb-2 tracking-tight">-- km</p>
+                                    <div class="flex items-center gap-2 mb-3">
                                         <div class="h-1 flex-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-full"></div>
-                                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark font-semibold">Optimal Route</p>
+                                        <p class="text-[10px] sm:text-xs text-text-muted-light dark:text-text-muted-dark font-semibold">Optimal Route</p>
+                                    </div>
+                                    
+                                    <!-- Additional Stats Grid -->
+                                    <div class="grid grid-cols-2 gap-2 sm:gap-3 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-primary/10">
+                                        <div class="text-center p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10">
+                                            <p class="text-[10px] sm:text-xs font-bold text-text-muted-light dark:text-text-muted-dark uppercase">Est. Time</p>
+                                            <p id="est-time" class="text-base sm:text-lg font-black text-blue-600 dark:text-blue-400">--</p>
+                                        </div>
+                                        <div class="text-center p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-500/10">
+                                            <p class="text-[10px] sm:text-xs font-bold text-text-muted-light dark:text-text-muted-dark uppercase">Fuel Cost</p>
+                                            <p id="fuel-cost" class="text-base sm:text-lg font-black text-amber-600 dark:text-amber-400">--</p>
+                                        </div>
+                                        <div class="text-center p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10">
+                                            <p class="text-[10px] sm:text-xs font-bold text-text-muted-light dark:text-text-muted-dark uppercase">States</p>
+                                            <p id="states-count" class="text-base sm:text-lg font-black text-purple-600 dark:text-purple-400">--</p>
+                                        </div>
+                                        <div class="text-center p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10">
+                                            <p class="text-[10px] sm:text-xs font-bold text-text-muted-light dark:text-text-muted-dark uppercase">Distance</p>
+                                            <p id="distance-miles" class="text-base sm:text-lg font-black text-emerald-600 dark:text-emerald-400">--</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="flex flex-col gap-4">
-                                <div class="flex items-center justify-between bg-gradient-to-r from-primary/5 to-purple-500/5 rounded-2xl p-4 border border-primary/10">
-                                    <div class="flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-primary">route</span>
-                                        <p class="text-sm font-black text-text-light dark:text-text-dark tracking-wide">ROUTE BREAKDOWN</p>
-                                    </div>
-                                    <span id="city-count" class="px-4 py-2 rounded-xl bg-gradient-to-r from-primary to-purple-600 text-white text-sm font-black shadow-lg">0 cities</span>
+                            <!-- Saved Routes Section -->
+                            <div class="flex flex-col gap-2 sm:gap-3">
+                                <div class="flex items-center justify-between">
+                                    <p class="text-xs sm:text-sm font-bold text-text-light dark:text-text-dark tracking-wide flex items-center gap-1.5 sm:gap-2">
+                                        <span class="material-symbols-outlined text-base sm:text-lg text-accent">bookmarks</span>
+                                        SAVED ROUTES
+                                    </p>
+                                    <button id="clear-saved-btn" class="text-[10px] sm:text-xs px-2 sm:px-3 py-1 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-bold hover:bg-red-100 transition-all min-h-[32px]">
+                                        Clear All
+                                    </button>
                                 </div>
-                                <div class="max-h-96 overflow-y-auto rounded-2xl bg-gradient-to-b from-background-light to-purple-50/20 dark:from-background-dark dark:to-purple-950/20 p-4 border-2 border-primary/10 shadow-inner">
-                                    <ul id="result-path-list" class="flex flex-col gap-3">
-                                        <li class="text-sm text-text-muted-light dark:text-text-muted-dark text-center py-12 font-medium">
+                                <div id="saved-routes-list" class="max-h-32 sm:max-h-40 overflow-y-auto rounded-lg sm:rounded-xl bg-gradient-to-b from-background-light to-purple-50/20 dark:from-background-dark dark:to-purple-950/20 p-2 sm:p-3 border-2 border-primary/10">
+                                    <p class="text-[10px] sm:text-xs text-center text-text-muted-light dark:text-text-muted-dark py-3 sm:py-4">No saved routes yet</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col gap-3 sm:gap-4">
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gradient-to-r from-primary/5 to-purple-500/5 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-primary/10 gap-2">
+                                    <div class="flex items-center gap-1.5 sm:gap-2">
+                                        <span class="material-symbols-outlined text-primary text-base sm:text-lg">route</span>
+                                        <p class="text-xs sm:text-sm font-black text-text-light dark:text-text-dark tracking-wide">ROUTE BREAKDOWN</p>
+                                    </div>
+                                    <span id="city-count" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-gradient-to-r from-primary to-purple-600 text-white text-xs sm:text-sm font-black shadow-lg">0 cities</span>
+                                </div>
+                                <div class="max-h-64 sm:max-h-96 overflow-y-auto rounded-xl sm:rounded-2xl bg-gradient-to-b from-background-light to-purple-50/20 dark:from-background-dark dark:to-purple-950/20 p-3 sm:p-4 border-2 border-primary/10 shadow-inner">
+                                    <ul id="result-path-list" class="flex flex-col gap-2 sm:gap-3">
+                                        <li class="text-xs sm:text-sm text-text-muted-light dark:text-text-muted-dark text-center py-8 sm:py-12 font-medium">
                                             🗺️ Select cities and find a route to see the detailed path here
                                         </li>
                                     </ul>
@@ -428,73 +521,350 @@
                     </div>
                 </aside>
                 
-                <section class="lg:col-span-8 xl:col-span-9 h-full p-8 md:p-10 bg-gradient-to-br from-slate-50 via-blue-50/40 to-purple-50/40 dark:from-slate-950 dark:via-blue-950/20 dark:to-purple-950/20 relative overflow-hidden">
+                <section class="lg:col-span-8 xl:col-span-9 h-full p-4 sm:p-6 md:p-10 bg-gradient-to-br from-slate-50 via-blue-50/40 to-purple-50/40 dark:from-slate-950 dark:via-blue-950/20 dark:to-purple-950/20 relative overflow-hidden rounded-2xl sm:rounded-3xl border-2 border-primary/10 shadow-2xl">
                     <div class="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
                     <div class="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-pink-500/10 to-accent/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
                     
-                    <div class="h-full flex flex-col gap-5 relative z-10">
-                        <div class="flex items-center justify-between glass-effect rounded-2xl p-5 shadow-xl">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg icon-float">
-                                    <span class="material-symbols-outlined text-white text-xl">map</span>
+                    <div class="h-full flex flex-col gap-3 sm:gap-5 relative z-10">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between glass-effect rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-xl gap-3">
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg icon-float">
+                                    <span class="material-symbols-outlined text-white text-lg sm:text-xl">map</span>
                                 </div>
                                 <div>
-                                    <h2 class="text-xl font-black text-text-light dark:text-text-dark tracking-tight">Interactive Map</h2>
-                                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark font-semibold">Real-time route visualization</p>
+                                    <h2 class="text-base sm:text-xl font-black text-text-light dark:text-text-dark tracking-tight">Interactive Map</h2>
+                                    <p class="text-[10px] sm:text-xs text-text-muted-light dark:text-text-muted-dark font-semibold">Real-time route visualization</p>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-3">
-                                <div class="px-4 py-2 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-xl border border-primary/20">
-                                    <div class="flex items-center gap-2 text-sm font-bold text-primary">
-                                        <span class="material-symbols-outlined text-base">public</span>
+                            <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+                                <div class="px-2 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-lg sm:rounded-xl border border-primary/20 hidden sm:block">
+                                    <div class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-bold text-primary">
+                                        <span class="material-symbols-outlined text-sm sm:text-base">public</span>
                                         <span>180+ Cities</span>
                                     </div>
                                 </div>
-                                <div class="px-4 py-2 bg-gradient-to-r from-accent/10 to-emerald-500/10 rounded-xl border border-accent/20">
-                                    <div class="flex items-center gap-2 text-sm font-bold text-accent">
-                                        <span class="material-symbols-outlined text-base">speed</span>
+                                <div class="px-2 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-accent/10 to-emerald-500/10 rounded-lg sm:rounded-xl border border-accent/20 hidden sm:block">
+                                    <div class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-bold text-accent">
+                                        <span class="material-symbols-outlined text-sm sm:text-base">speed</span>
                                         <span>Live Data</span>
                                     </div>
                                 </div>
+                                <!-- Map Controls -->
+                                <div class="flex gap-1.5 sm:gap-2">
+                                    <button id="recenter-map-btn" class="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 transition-all" title="Recenter map">
+                                        <span class="material-symbols-outlined text-base sm:text-lg">my_location</span>
+                                    </button>
+                                    <button id="fullscreen-map-btn" class="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-purple-500/10 text-purple-600 hover:bg-purple-500/20 transition-all" title="Toggle fullscreen">
+                                        <span class="material-symbols-outlined text-base sm:text-lg">fullscreen</span>
+                                    </button>
+                                    <button id="download-route-btn" class="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 transition-all disabled:opacity-50" title="Download route" disabled>
+                                        <span class="material-symbols-outlined text-base sm:text-lg">download</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div id="map" class="flex-1 rounded-3xl overflow-hidden border-4 border-primary/20 shadow-2xl transform hover:scale-[1.01] transition-transform duration-500"></div>
+                        <div class="relative flex-1 min-h-[300px] sm:min-h-[400px]">
+                            <div id="map" class="h-full rounded-2xl sm:rounded-3xl overflow-hidden border-2 sm:border-4 border-primary/20 shadow-2xl"></div>
+                            <!-- Map Overlay Info -->
+                            <div id="map-info-overlay" class="absolute top-4 left-4 glass-effect rounded-xl p-3 shadow-lg hidden">
+                                <p class="text-xs font-bold text-text-muted-light dark:text-text-muted-dark mb-1">Current Route</p>
+                                <p class="text-sm font-black text-text-light dark:text-text-dark" id="overlay-route-name">--</p>
+                            </div>
+                        </div>
                     </div>
                 </section>
-                
+
             </div>
+
+            <!-- Popular Routes Section -->
+            <section class="glass-effect rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-primary/20 animate-slideIn mb-8" style="animation-delay: 0.4s;">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+                        <div class="flex items-center gap-2 sm:gap-3">
+                            <span class="material-symbols-outlined text-2xl sm:text-3xl text-primary">trending_up</span>
+                            <h3 class="text-xl sm:text-2xl font-black gradient-text">Popular Routes</h3>
+                        </div>
+                        <button id="refresh-popular-btn" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-all flex items-center gap-1.5 sm:gap-2 text-sm">
+                            <span class="material-symbols-outlined text-base sm:text-lg">refresh</span>
+                            <span class="font-bold">Refresh</span>
+                        </button>
+                    </div>
+                    <div id="popular-routes-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+                        <!-- Popular routes will be dynamically added here -->
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-primary/20 hover:border-primary/40 transition-all cursor-pointer group" onclick="loadPopularRoute('Mumbai', 'Delhi')">
+                            <div class="flex items-start justify-between mb-3 gap-2">
+                                <div class="flex items-center gap-2 flex-1 min-w-0">
+                                    <span class="material-symbols-outlined text-lg text-blue-600 flex-shrink-0">location_on</span>
+                                    <span class="font-bold text-text-light dark:text-text-dark text-sm break-words">Mumbai → Delhi</span>
+                                </div>
+                                <span class="text-xs font-bold px-2 py-1 bg-blue-500/20 text-blue-600 rounded-lg">1439 km</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs text-text-muted-light dark:text-text-muted-dark">
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">schedule</span>
+                                    <span>~18h</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">local_gas_station</span>
+                                    <span>₹8,634</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-all cursor-pointer group" onclick="loadPopularRoute('Bangalore', 'Chennai')">
+                            <div class="flex items-start justify-between mb-3 gap-2">
+                                <div class="flex items-center gap-2 flex-1 min-w-0">
+                                    <span class="material-symbols-outlined text-lg text-purple-600 flex-shrink-0">location_on</span>
+                                    <span class="font-bold text-text-light dark:text-text-dark text-sm break-words">Bangalore → Chennai</span>
+                                </div>
+                                <span class="text-xs font-bold px-2 py-1 bg-purple-500/20 text-purple-600 rounded-lg">346 km</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs text-text-muted-light dark:text-text-muted-dark">
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">schedule</span>
+                                    <span>~5h</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">local_gas_station</span>
+                                    <span>₹2,076</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 hover:border-emerald-500/40 transition-all cursor-pointer group" onclick="loadPopularRoute('Delhi', 'Jaipur')">
+                            <div class="flex items-start justify-between mb-3 gap-2">
+                                <div class="flex items-center gap-2 flex-1 min-w-0">
+                                    <span class="material-symbols-outlined text-lg text-emerald-600 flex-shrink-0">location_on</span>
+                                    <span class="font-bold text-text-light dark:text-text-dark text-sm break-words">Delhi → Jaipur</span>
+                                </div>
+                                <span class="text-xs font-bold px-2 py-1 bg-emerald-500/20 text-emerald-600 rounded-lg">280 km</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs text-text-muted-light dark:text-text-muted-dark">
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">schedule</span>
+                                    <span>~4h</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">local_gas_station</span>
+                                    <span>₹1,680</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 hover:border-amber-500/40 transition-all cursor-pointer group" onclick="loadPopularRoute('Kolkata', 'Hyderabad')">
+                            <div class="flex items-start justify-between mb-3 gap-2">
+                                <div class="flex items-center gap-2 flex-1 min-w-0">
+                                    <span class="material-symbols-outlined text-lg text-amber-600 flex-shrink-0">location_on</span>
+                                    <span class="font-bold text-text-light dark:text-text-dark text-sm break-words">Kolkata → Hyderabad</span>
+                                </div>
+                                <span class="text-xs font-bold px-2 py-1 bg-amber-500/20 text-amber-600 rounded-lg">1494 km</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs text-text-muted-light dark:text-text-muted-dark">
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">schedule</span>
+                                    <span>~19h</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">local_gas_station</span>
+                                    <span>₹8,964</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-rose-500/10 to-red-500/10 border border-rose-500/20 hover:border-rose-500/40 transition-all cursor-pointer group" onclick="loadPopularRoute('Pune', 'Goa')">
+                            <div class="flex items-start justify-between mb-3 gap-2">
+                                <div class="flex items-center gap-2 flex-1 min-w-0">
+                                    <span class="material-symbols-outlined text-lg text-rose-600 flex-shrink-0">location_on</span>
+                                    <span class="font-bold text-text-light dark:text-text-dark text-sm break-words">Pune → Goa</span>
+                                </div>
+                                <span class="text-xs font-bold px-2 py-1 bg-rose-500/20 text-rose-600 rounded-lg">448 km</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs text-text-muted-light dark:text-text-muted-dark">
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">schedule</span>
+                                    <span>~6h</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">local_gas_station</span>
+                                    <span>₹2,688</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 hover:border-cyan-500/40 transition-all cursor-pointer group" onclick="loadPopularRoute('Ahmedabad', 'Udaipur')">
+                            <div class="flex items-start justify-between mb-3 gap-2">
+                                <div class="flex items-center gap-2 flex-1 min-w-0">
+                                    <span class="material-symbols-outlined text-lg text-cyan-600 flex-shrink-0">location_on</span>
+                                    <span class="font-bold text-text-light dark:text-text-dark text-sm break-words">Ahmedabad → Udaipur</span>
+                                </div>
+                                <span class="text-xs font-bold px-2 py-1 bg-cyan-500/20 text-cyan-600 rounded-lg">262 km</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs text-text-muted-light dark:text-text-muted-dark">
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">schedule</span>
+                                    <span>~4h</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">local_gas_station</span>
+                                    <span>₹1,572</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
         </main>
         
-        <footer class="glass-effect border-t-2 border-primary/20 py-6 px-8 relative overflow-hidden">
+        <footer class="glass-effect border-t-2 border-primary/20 py-4 sm:py-6 px-4 sm:px-8 relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-r from-primary/5 via-purple-500/5 to-pink-500/5"></div>
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm relative z-10">
-                <div class="flex items-center gap-6">
-                    <div class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-xl border border-primary/20">
-                        <span class="material-symbols-outlined text-lg text-primary">code</span>
-                        <span class="font-bold text-text-light dark:text-text-dark">Flask • Leaflet • Dijkstra</span>
+            <div class="flex flex-col items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm relative z-10">
+                <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
+                    <div class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-lg sm:rounded-xl border border-primary/20">
+                        <span class="material-symbols-outlined text-base sm:text-lg text-primary">code</span>
+                        <span class="font-bold text-text-light dark:text-text-dark text-xs sm:text-sm">Flask • Leaflet • Dijkstra</span>
                     </div>
-                    <div class="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark">
-                        <span class="material-symbols-outlined text-base text-accent">schedule</span>
+                    <div class="flex items-center gap-1.5 sm:gap-2 text-text-muted-light dark:text-text-muted-dark hidden md:flex">
+                        <span class="material-symbols-outlined text-sm sm:text-base text-accent">schedule</span>
                         <span class="font-semibold">Real-time Calculations</span>
                     </div>
+                    <button id="help-btn" class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 transition-all border border-blue-500/20">
+                        <span class="material-symbols-outlined text-base sm:text-lg">help</span>
+                        <span class="font-bold text-xs sm:text-sm">Help</span>
+                    </button>
                 </div>
-                <div class="flex items-center gap-3 px-5 py-2.5 bg-gradient-to-r from-accent/10 to-emerald-500/10 rounded-xl border-2 border-accent/30 shadow-lg">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center shadow-lg">
-                        <span class="material-symbols-outlined text-white text-lg">workspace_premium</span>
+                <div class="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-accent/10 to-emerald-500/10 rounded-lg sm:rounded-xl border border-accent/30 shadow-lg">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center shadow-lg">
+                        <span class="material-symbols-outlined text-white text-base sm:text-lg">workspace_premium</span>
                     </div>
                     <div>
-                        <p class="text-xs font-bold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider">Crafted with Excellence</p>
-                        <p class="font-black gradient-text text-base">Panashe Kunaka</p>
+                        <p class="text-[10px] sm:text-xs font-bold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider">Crafted with Excellence</p>
+                        <p class="font-black gradient-text text-sm sm:text-base">Panashe Kunaka</p>
                     </div>
                 </div>
             </div>
         </footer>
     </div>
 
+    <!-- Help Modal -->
+    <div id="help-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden p-4 flex items-center justify-center" style="display: none;">
+        <div class="glass-effect rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border-2 border-primary/20 animate-fadeIn">
+            <div class="sticky top-0 glass-effect border-b border-primary/20 p-4 sm:p-6 flex items-center justify-between">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <span class="material-symbols-outlined text-2xl sm:text-3xl text-primary">help</span>
+                    <h2 class="text-xl sm:text-2xl font-black gradient-text">Help & Shortcuts</h2>
+                </div>
+                <button id="close-help-btn" class="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-all">
+                    <span class="material-symbols-outlined text-lg sm:text-xl">close</span>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <!-- Keyboard Shortcuts -->
+                <div>
+                    <h3 class="text-xl font-black text-text-light dark:text-text-dark mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">keyboard</span>
+                        Keyboard Shortcuts
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-surface-light dark:bg-surface-dark">
+                            <span class="text-text-light dark:text-text-dark font-semibold">Focus search</span>
+                            <kbd class="px-3 py-1 rounded-lg bg-primary/20 text-primary font-bold text-sm border border-primary/30">Ctrl + K</kbd>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-surface-light dark:bg-surface-dark">
+                            <span class="text-text-light dark:text-text-dark font-semibold">Clear route</span>
+                            <kbd class="px-3 py-1 rounded-lg bg-primary/20 text-primary font-bold text-sm border border-primary/30">Esc</kbd>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-surface-light dark:bg-surface-dark">
+                            <span class="text-text-light dark:text-text-dark font-semibold">Save route</span>
+                            <kbd class="px-3 py-1 rounded-lg bg-primary/20 text-primary font-bold text-sm border border-primary/30">Ctrl + S</kbd>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voice Commands -->
+                <div>
+                    <h3 class="text-xl font-black text-text-light dark:text-text-dark mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-red-500">mic</span>
+                        Voice Commands
+                    </h3>
+                    <div class="p-4 rounded-xl bg-gradient-to-br from-red-500/10 to-pink-500/10 border border-red-500/20">
+                        <p class="text-text-light dark:text-text-dark mb-2"><strong>Click the microphone button and say:</strong></p>
+                        <code class="block p-3 rounded-lg bg-black/20 text-accent font-mono text-sm">
+                            "Find route from [City Name] to [City Name]"
+                        </code>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-2">Example: "Find route from Mumbai to Delhi"</p>
+                    </div>
+                </div>
+
+                <!-- Transport Modes -->
+                <div>
+                    <h3 class="text-xl font-black text-text-light dark:text-text-dark mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-purple-500">directions_car</span>
+                        Transport Modes
+                    </h3>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="text-center p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
+                            <span class="material-symbols-outlined text-3xl text-blue-600">directions_car</span>
+                            <p class="font-bold text-text-light dark:text-text-dark mt-2">Car</p>
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark">80 km/h • ₹6/km</p>
+                        </div>
+                        <div class="text-center p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20">
+                            <span class="material-symbols-outlined text-3xl text-amber-600">directions_bus</span>
+                            <p class="font-bold text-text-light dark:text-text-dark mt-2">Bus</p>
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark">60 km/h • ₹4/km</p>
+                        </div>
+                        <div class="text-center p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20">
+                            <span class="material-symbols-outlined text-3xl text-emerald-600">two_wheeler</span>
+                            <p class="font-bold text-text-light dark:text-text-dark mt-2">Bike</p>
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark">50 km/h • ₹3/km</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div>
+                    <h3 class="text-xl font-black text-text-light dark:text-text-dark mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-accent">stars</span>
+                        Features
+                    </h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start gap-3 p-3 rounded-xl bg-surface-light dark:bg-surface-dark">
+                            <span class="material-symbols-outlined text-accent">check_circle</span>
+                            <div>
+                                <p class="font-bold text-text-light dark:text-text-dark">180+ Cities</p>
+                                <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Pan-India coverage across all states</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 p-3 rounded-xl bg-surface-light dark:bg-surface-dark">
+                            <span class="material-symbols-outlined text-accent">check_circle</span>
+                            <div>
+                                <p class="font-bold text-text-light dark:text-text-dark">Dijkstra's Algorithm</p>
+                                <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Guaranteed shortest path calculation</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 p-3 rounded-xl bg-surface-light dark:bg-surface-dark">
+                            <span class="material-symbols-outlined text-accent">check_circle</span>
+                            <div>
+                                <p class="font-bold text-text-light dark:text-text-dark">Save & Share</p>
+                                <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Keep your favorite routes and share with friends</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 p-3 rounded-xl bg-surface-light dark:bg-surface-dark">
+                            <span class="material-symbols-outlined text-accent">check_circle</span>
+                            <div>
+                                <p class="font-bold text-text-light dark:text-text-dark">Dark Mode</p>
+                                <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Eye-friendly interface for any lighting</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="https://unpkg.com/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v={{ range(1, 10000) | random }}"></script>
 
 </body>
 </html>
