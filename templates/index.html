@@ -15,7 +15,7 @@
     
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
@@ -24,82 +24,471 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: "#019863", "background-light": "#f5f8f7", "background-dark": "#0f231c",
-                        "surface-light": "#ffffff", "surface-dark": "#1a2632", "text-light": "#0d141c",
-                        "text-dark": "#e0e6eb", "text-muted-light": "#4939c", "text-muted-dark": "#94a3b8",
-                        "border-light": "#e2e8f0", "border-dark": "#334155"
+                        primary: "#6366f1", 
+                        "primary-dark": "#4f46e5",
+                        "primary-light": "#818cf8",
+                        "background-light": "#f8fafc", 
+                        "background-dark": "#0f172a",
+                        "surface-light": "#ffffff", 
+                        "surface-dark": "#1e293b", 
+                        "text-light": "#0f172a",
+                        "text-dark": "#f1f5f9", 
+                        "text-muted-light": "#64748b", 
+                        "text-muted-dark": "#94a3b8",
+                        "border-light": "#e2e8f0", 
+                        "border-dark": "#334155",
+                        "accent": "#10b981",
+                        "accent-dark": "#059669"
                     },
-                    fontFamily: { display: "Space Grotesk" },
-                    borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" }
+                    fontFamily: { 
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    borderRadius: { DEFAULT: "0.5rem", lg: "0.75rem", xl: "1rem", "2xl": "1.5rem", full: "9999px" },
+                    boxShadow: {
+                        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
+                        'glow': '0 0 20px rgba(99, 102, 241, 0.3)',
+                    }
                 }
             }
         };
     </script>
     <style>
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24 }
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .material-symbols-outlined { 
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.8), 0 0 60px rgba(139, 92, 246, 0.6); }
+        }
+        
+        .animate-slide-in {
+            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+        
+        .dark .glass-effect {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        #map { 
+            height: 100%; 
+            min-height: 600px;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.2),
+                        0 0 0 1px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #map::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .path-card {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .path-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .path-card:hover {
+            transform: translateX(6px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+        }
+        
+        .path-card:hover::before {
+            left: 100%;
+        }
+        
+        .creator-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.625rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.625rem;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5),
+                        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+            animation: glow-pulse 3s ease-in-out infinite;
+            letter-spacing: 0.02em;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .creator-badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            animation: shimmer 3s infinite;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+            z-index: -1;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .icon-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+        
+        .neon-border {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3),
+                        inset 0 0 20px rgba(99, 102, 241, 0.1);
+        }
+        
+        .dark .neon-border {
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.5),
+                        inset 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+        
+        /* Selection */
+        ::selection {
+            background: rgba(99, 102, 241, 0.3);
+            color: inherit;
+        }
+        
+        .loading-dots::after {
+            content: '...';
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
     </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+<body class="bg-background-light dark:bg-background-dark font-sans text-text-light dark:text-text-dark">
     <div class="relative flex h-auto min-h-screen w-full flex-col">
-        <header class="flex w-full items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark px-4 sm:px-6 lg:px-8 py-3">
-            <div class="flex items-center gap-3 text-text-light dark:text-text-dark">
-                <div class="size-6 text-primary">
-                    <svg fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20.56,3.34a1,1,0,0,0-1-.08l-17,8a1,1,0,0,0,0,1.82l6.4,3.2,3.2,6.4a1,1,0,0,0,1.82,0l8-17A1,1,0,0,0,20.56,3.34ZM13,18.06,10.61,13.2a1,1,0,0,0-.65-.65L5,10.15l14.24-6.68Z"></path>
-                    </svg>
+        <header class="glass-effect sticky top-0 z-50 flex w-full items-center justify-between whitespace-nowrap px-6 sm:px-8 lg:px-10 py-5 animate-fade-in">
+            <div class="flex items-center gap-5 text-text-light dark:text-text-dark">
+                <div class="relative icon-float">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary via-purple-500 to-pink-500 rounded-2xl blur-xl opacity-60 animate-pulse"></div>
+                    <div class="relative w-14 h-14 bg-gradient-to-br from-primary via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-glow transform hover:scale-110 transition-transform duration-300">
+                        <svg class="w-7 h-7 text-white" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
                 </div>
-                <h1 class="text-xl font-bold">Dijkstra's Path Visualizer</h1>
+                <div>
+                    <h1 class="text-2xl font-extrabold gradient-text tracking-tight">India Path Finder</h1>
+                    <p class="text-xs font-semibold text-primary/70 dark:text-primary-light/70 tracking-wide uppercase">Powered by Dijkstra's Algorithm • 180+ Cities</p>
+                </div>
             </div>
-            <button class="flex items-center justify-center rounded-full p-2 hover:bg-black/10 dark:hover:bg-white/10">
-                <span class="material-symbols-outlined">dark_mode</span>
-            </button>
+            <div class="flex items-center gap-4">
+                <span class="creator-badge transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                    </svg>
+                    <span>Produced by Panashe Kunaka</span>
+                </span>
+                <button id="theme-toggle" class="flex items-center justify-center rounded-2xl p-3 bg-gradient-to-br from-primary/10 to-purple-500/10 hover:from-primary/20 hover:to-purple-500/20 transition-all duration-300 transform hover:scale-110 neon-border">
+                    <span class="material-symbols-outlined text-primary text-xl">dark_mode</span>
+                </button>
+            </div>
         </header>
         <main class="flex-1">
             <div class="grid h-full lg:grid-cols-12">
-                <aside class="lg:col-span-4 xl:col-span-3 h-full border-r border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-6 lg:p-8">
-                    <div class="flex flex-col gap-8">
-                        <div class="flex flex-col gap-1">
-                            <h2 class="text-3xl font-bold tracking-tight text-text-light dark:text-text-dark">Controls</h2>
-                            <p class="text-base text-text-muted-light dark:text-text-muted-dark">Find the shortest route between two cities.</p>
+                <aside class="lg:col-span-4 xl:col-span-3 h-full border-r-2 border-primary/10 bg-gradient-to-b from-surface-light via-purple-50/30 to-blue-50/30 dark:from-surface-dark dark:via-purple-950/20 dark:to-blue-950/20 p-8 lg:p-10 overflow-y-auto shadow-2xl">
+                    <div class="flex flex-col gap-10">
+                        <div class="flex flex-col gap-3 animate-slide-in relative">
+                            <div class="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-primary via-purple-500 to-pink-500 rounded-full"></div>
+                            <h2 class="text-4xl font-black tracking-tight gradient-text leading-tight">Route Planner</h2>
+                            <p class="text-sm text-text-muted-light dark:text-text-muted-dark leading-relaxed">Discover the optimal path between <span class="font-bold text-primary">180+ Indian cities</span> using advanced graph algorithms.</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="px-3 py-1 bg-primary/10 dark:bg-primary/20 text-primary text-xs font-bold rounded-full">AI-Powered</span>
+                                <span class="px-3 py-1 bg-accent/10 dark:bg-accent/20 text-accent text-xs font-bold rounded-full">Real-Time</span>
+                            </div>
                         </div>
-                        <div class="flex flex-col gap-6">
-                            <label class="flex flex-col gap-2">
-                                <p class="text-base font-medium">Start City</p>
-                                <select id="start-city-select">
+                        
+                        <div class="flex flex-col gap-6 animate-slide-in" style="animation-delay: 0.1s;">
+                            <label class="flex flex-col gap-3 group">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                        <span class="material-symbols-outlined text-white text-lg">location_on</span>
+                                    </div>
+                                    <p class="text-sm font-bold text-text-light dark:text-text-dark tracking-wide">STARTING POINT</p>
+                                </div>
+                                <select id="start-city-select" class="rounded-2xl border-2 border-primary/20 dark:border-primary/30 bg-white dark:bg-surface-dark focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 py-3.5 px-4 font-semibold text-base shadow-lg hover:shadow-xl neon-border">
                                 </select>
                             </label>
-                            <label class="flex flex-col gap-2">
-                                <p class="text-base font-medium">End City</p>
-                                <select id="end-city-select">
+                            
+                            <div class="flex items-center justify-center">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary/10 to-purple-500/10 flex items-center justify-center border-2 border-primary/20">
+                                    <span class="material-symbols-outlined text-primary text-2xl animate-pulse">swap_vert</span>
+                                </div>
+                            </div>
+                            
+                            <label class="flex flex-col gap-3 group">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                        <span class="material-symbols-outlined text-white text-lg">flag</span>
+                                    </div>
+                                    <p class="text-sm font-bold text-text-light dark:text-text-dark tracking-wide">DESTINATION</p>
+                                </div>
+                                <select id="end-city-select" class="rounded-2xl border-2 border-accent/20 dark:border-accent/30 bg-white dark:bg-surface-dark focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all duration-300 py-3.5 px-4 font-semibold text-base shadow-lg hover:shadow-xl">
                                 </select>
                             </label>
-                            <button id="find-path-btn" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold tracking-wide hover:bg-primary/90 transition-colors disabled:bg-primary/50 disabled:cursor-not-allowed">
-                                <span>Find Shortest Path</span>
+                            
+                            <button id="find-path-btn" class="btn-primary group relative flex w-full cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-2xl h-16 px-8 bg-gradient-to-r from-primary via-purple-600 to-pink-600 text-white text-lg font-black tracking-wide hover:shadow-glow transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.03] active:scale-[0.97] shadow-2xl">
+                                <span class="material-symbols-outlined text-2xl group-hover:rotate-180 transition-transform duration-500">explore</span>
+                                <span>Find Shortest Route</span>
+                                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                             </button>
                         </div>
-                        <hr class="border-border-light dark:border-border-dark" />
-                        <div class="flex flex-col gap-6">
-                            <h3 class="text-2xl font-bold tracking-tight">Results</h3>
-                            <div class="rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark p-4">
-                                <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Total Distance</p>
-                                <p id="result-distance" class="text-3xl font-bold text-primary">-- km</p>
+                        
+                        <div class="h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-full shadow-lg"></div>
+                        
+                        <div class="flex flex-col gap-7 animate-slide-in" style="animation-delay: 0.2s;">
+                            <div class="flex items-center gap-3 relative">
+                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-xl">
+                                    <span class="material-symbols-outlined text-white text-xl">analytics</span>
+                                </div>
+                                <h3 class="text-2xl font-black tracking-tight gradient-text">Journey Analytics</h3>
                             </div>
-                            <div class="flex flex-col gap-3">
-                                <p class="text-base font-medium">Shortest Path</p>
-                                <ul id="result-path-list" class="flex flex-col gap-2">
-                                </ul>
+                            
+                            <div class="stats-card rounded-3xl p-7 shadow-2xl relative overflow-hidden transform hover:scale-[1.02] transition-transform duration-300">
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full blur-3xl"></div>
+                                <div class="relative z-10">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <p class="text-xs font-black uppercase tracking-widest text-primary/70">Total Distance</p>
+                                        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-primary text-lg">straighten</span>
+                                        </div>
+                                    </div>
+                                    <p id="result-distance" class="text-5xl font-black gradient-text mb-2 tracking-tight">-- km</p>
+                                    <div class="flex items-center gap-2">
+                                        <div class="h-1 flex-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-full"></div>
+                                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark font-semibold">Optimal Route</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col gap-4">
+                                <div class="flex items-center justify-between bg-gradient-to-r from-primary/5 to-purple-500/5 rounded-2xl p-4 border border-primary/10">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-primary">route</span>
+                                        <p class="text-sm font-black text-text-light dark:text-text-dark tracking-wide">ROUTE BREAKDOWN</p>
+                                    </div>
+                                    <span id="city-count" class="px-4 py-2 rounded-xl bg-gradient-to-r from-primary to-purple-600 text-white text-sm font-black shadow-lg">0 cities</span>
+                                </div>
+                                <div class="max-h-96 overflow-y-auto rounded-2xl bg-gradient-to-b from-background-light to-purple-50/20 dark:from-background-dark dark:to-purple-950/20 p-4 border-2 border-primary/10 shadow-inner">
+                                    <ul id="result-path-list" class="flex flex-col gap-3">
+                                        <li class="text-sm text-text-muted-light dark:text-text-muted-dark text-center py-12 font-medium">
+                                            🗺️ Select cities and find a route to see the detailed path here
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </aside>
                 
-                <section class="lg:col-span-8 xl:col-span-9 h-full p-4 md:p-8">
-                    <div id="map" class="w-full h-full rounded-lg shadow-md"></div>
+                <section class="lg:col-span-8 xl:col-span-9 h-full p-8 md:p-10 bg-gradient-to-br from-slate-50 via-blue-50/40 to-purple-50/40 dark:from-slate-950 dark:via-blue-950/20 dark:to-purple-950/20 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+                    <div class="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-pink-500/10 to-accent/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+                    
+                    <div class="h-full flex flex-col gap-5 relative z-10">
+                        <div class="flex items-center justify-between glass-effect rounded-2xl p-5 shadow-xl">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg icon-float">
+                                    <span class="material-symbols-outlined text-white text-xl">map</span>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-black text-text-light dark:text-text-dark tracking-tight">Interactive Map</h2>
+                                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark font-semibold">Real-time route visualization</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="px-4 py-2 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-xl border border-primary/20">
+                                    <div class="flex items-center gap-2 text-sm font-bold text-primary">
+                                        <span class="material-symbols-outlined text-base">public</span>
+                                        <span>180+ Cities</span>
+                                    </div>
+                                </div>
+                                <div class="px-4 py-2 bg-gradient-to-r from-accent/10 to-emerald-500/10 rounded-xl border border-accent/20">
+                                    <div class="flex items-center gap-2 text-sm font-bold text-accent">
+                                        <span class="material-symbols-outlined text-base">speed</span>
+                                        <span>Live Data</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="map" class="flex-1 rounded-3xl overflow-hidden border-4 border-primary/20 shadow-2xl transform hover:scale-[1.01] transition-transform duration-500"></div>
+                    </div>
                 </section>
                 
             </div>
         </main>
+        
+        <footer class="glass-effect border-t-2 border-primary/20 py-6 px-8 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary/5 via-purple-500/5 to-pink-500/5"></div>
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm relative z-10">
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-xl border border-primary/20">
+                        <span class="material-symbols-outlined text-lg text-primary">code</span>
+                        <span class="font-bold text-text-light dark:text-text-dark">Flask • Leaflet • Dijkstra</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark">
+                        <span class="material-symbols-outlined text-base text-accent">schedule</span>
+                        <span class="font-semibold">Real-time Calculations</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 px-5 py-2.5 bg-gradient-to-r from-accent/10 to-emerald-500/10 rounded-xl border-2 border-accent/30 shadow-lg">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center shadow-lg">
+                        <span class="material-symbols-outlined text-white text-lg">workspace_premium</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider">Crafted with Excellence</p>
+                        <p class="font-black gradient-text text-base">Panashe Kunaka</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
