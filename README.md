@@ -1,6 +1,17 @@
 # India Path Finder 🗺️
 
 A stunning web application that finds the shortest path between 180+ Indian cities using Dijkstra's algorithm with real-time visualization on an interactive map.
+<img width="1364" height="639" alt="image" src="https://github.com/user-attachments/assets/18cb179c-eb1d-4208-a0d8-b61cd4684862" />
+<img width="1362" height="538" alt="image" src="https://github.com/user-attachments/assets/eec25438-6c1e-4bce-97dd-392347582ece" />
+<img width="407" height="535" alt="image" src="https://github.com/user-attachments/assets/85dcbe22-2d9b-4ea7-aa73-6a69071e7133" /><img width="542" height="548" alt="image" src="https://github.com/user-attachments/assets/df13e029-4d69-42a3-9704-fba04af8c8b4" />
+<img width="1334" height="539" alt="image" src="https://github.com/user-attachments/assets/cfb7b417-c0e9-40df-85ad-8f61370742c5" />
+ALSO IN NIGHT MODE
+<img width="1363" height="646" alt="image" src="https://github.com/user-attachments/assets/151972a0-3dfe-405f-8dec-2651cacb2fcc" />
+
+
+
+
+
 
 ![India Path Finder](https://img.shields.io/badge/Cities-180%2B-blue) ![Algorithm](https://img.shields.io/badge/Algorithm-Dijkstra-green) ![Status](https://img.shields.io/badge/Status-Live-success)
 
