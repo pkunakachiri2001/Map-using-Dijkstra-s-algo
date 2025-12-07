@@ -32,10 +32,6 @@ ALSO IN NIGHT MODE
 - **Algorithm**: Dijkstra's Shortest Path
 - **Deployment**: Render
 
-## 🚀 Live Demo
-
-[View Live Application](#) *(Add your Render deployment URL here)*
-
 ## 📦 Installation
 
 ### Prerequisites
